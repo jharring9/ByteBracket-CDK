@@ -1,0 +1,83 @@
+{
+  "load-balancer:account=312042277619:loadBalancerArn=arn$:aws$:elasticloadbalancing$:us-east-1$:312042277619$:loadbalancer/app/ByteBracket-ALB/7b51f1be3b41096b:loadBalancerType=application:region=us-east-1": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:312042277619:loadbalancer/app/ByteBracket-ALB/7b51f1be3b41096b",
+    "loadBalancerCanonicalHostedZoneId": "Z35SXDOTRQ7X7K",
+    "loadBalancerDnsName": "ByteBracket-ALB-1097039237.us-east-1.elb.amazonaws.com",
+    "vpcId": "vpc-0c1c5dbea2575eb2b",
+    "securityGroupIds": [
+      "sg-0336eda47eddc0b0f",
+      "sg-0f0ea3df15491af00"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "vpc-provider:account=312042277619:filter.vpc-id=vpc-0c1c5dbea2575eb2b:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0c1c5dbea2575eb2b",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "312042277619",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0a077f37e0c261eb0",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          },
+          {
+            "subnetId": "subnet-01ecd1282a1c89926",
+            "cidr": "172.31.80.0/20",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          },
+          {
+            "subnetId": "subnet-08498a3821b743c7b",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "us-east-1c",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          },
+          {
+            "subnetId": "subnet-088bd9eda090c8dc3",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "us-east-1d",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          },
+          {
+            "subnetId": "subnet-055de0d4efcf3009f",
+            "cidr": "172.31.48.0/20",
+            "availabilityZone": "us-east-1e",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          },
+          {
+            "subnetId": "subnet-0326f840e2d8e5c6c",
+            "cidr": "172.31.64.0/20",
+            "availabilityZone": "us-east-1f",
+            "routeTableId": "rtb-08b136fc3b0089a34"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=312042277619:region=us-east-1:securityGroupId=sg-0336eda47eddc0b0f": {
+    "securityGroupId": "sg-0336eda47eddc0b0f",
+    "allowAllOutbound": false
+  },
+  "security-group:account=312042277619:region=us-east-1:securityGroupId=sg-0f0ea3df15491af00": {
+    "securityGroupId": "sg-0f0ea3df15491af00",
+    "allowAllOutbound": false
+  },
+  "hosted-zone:account=312042277619:domainName=bytebracket.io:region=us-east-1": {
+    "Id": "/hostedzone/Z01392962RNDXLQVZCNH3",
+    "Name": "bytebracket.io."
+  },
+  "availability-zones:account=312042277619:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ]
+}
