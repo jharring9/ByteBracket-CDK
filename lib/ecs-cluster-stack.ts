@@ -76,8 +76,7 @@ export class EcsClusterStack extends Stack {
 
     // Add container to fargate task definition:
     fargateTaskDefinition.addContainer("Container", {
-      // image: ContainerImage.fromEcrRepository(this.ecrRepo),
-      image: ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
+      image: ContainerImage.fromEcrRepository(this.ecrRepo),
       portMappings: [{ containerPort: SERVICE_TASK_PORT }],
       logging: new AwsLogDriver({
         streamPrefix: "Backend-Container",
@@ -103,9 +102,9 @@ export class EcsClusterStack extends Stack {
     listener.addTargets("ALB-Targets", {
       port: SERVICE_TASK_PORT,
       targets: [this.service],
-      // healthCheck: {
-      //   path: TASK_HEALTH_CHECK_PATH,
-      // },
+      healthCheck: {
+        path: TASK_HEALTH_CHECK_PATH,
+      },
     });
   }
 
