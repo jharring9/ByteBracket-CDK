@@ -1,7 +1,7 @@
 import { Construct } from "constructs";
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
-import { Cluster, ContainerImage, FargateService, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
+import { AwsLogDriver, Cluster, ContainerImage, FargateService, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
 import {
   SERVICE_DESIRED_COUNT,
   SERVICE_MAX_CAPACITY_MULTIPLIER,
@@ -15,6 +15,7 @@ import { ApplicationLoadBalancer, ApplicationProtocol } from "aws-cdk-lib/aws-el
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { Role } from "aws-cdk-lib/aws-iam";
+import { RetentionDays } from "aws-cdk-lib/aws-logs";
 
 type EcsClusterStackProps = StackProps & {
   scope: Construct;
@@ -32,7 +33,6 @@ export class EcsClusterStack extends Stack {
     this.createFargateService();
     this.createLoadBalancer();
     this.createAutoScaling();
-    // TODO -- enable logging for fargate tasks
   }
 
   get getVpc(): Vpc {
@@ -83,6 +83,10 @@ export class EcsClusterStack extends Stack {
     fargateTaskDefinition.addContainer(`${SERVICE_NAME}-Container`, {
       image: ContainerImage.fromEcrRepository(this.ecrRepo),
       portMappings: [{ containerPort: SERVICE_TASK_PORT }],
+      logging: new AwsLogDriver({
+        streamPrefix: `${SERVICE_NAME}-Backend-Container`,
+        logRetention: RetentionDays.ONE_WEEK,
+      }),
     });
     this.service = new FargateService(this, `${SERVICE_NAME}-FargateService`, {
       cluster: cluster,
