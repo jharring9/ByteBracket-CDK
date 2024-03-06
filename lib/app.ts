@@ -50,3 +50,5 @@ const redisStack = new RedisStack({
   env: AWS_ENVIRONMENT,
   description: "Defines the Redis cluster for the backend service.",
 });
+
+// TODO -- create DynamoDB stack
