@@ -17,8 +17,8 @@ export class CdkPipelineStack extends Stack {
   constructor(props: CdkPipelineStackProps) {
     super(props.scope, props.id, props);
 
-    const pipeline = new CodePipeline(this, `${SERVICE_NAME}-Cdk-Pipeline`, {
-      pipelineName: `${SERVICE_NAME}-Cdk-Pipeline`,
+    const pipeline = new CodePipeline(this, "Cdk-Pipeline", {
+      pipelineName: "Cdk-Pipeline",
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.gitHub(`${GITHUB_USER}/${CDK_REPO}`, "main"),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
@@ -26,7 +26,7 @@ export class CdkPipelineStack extends Stack {
     });
 
     pipeline.addStage(
-      new CdkPipelineStage(this, `${SERVICE_NAME}`, {
+      new CdkPipelineStage(this, SERVICE_NAME, {
         env: AWS_ENVIRONMENT,
       })
     );
@@ -39,13 +39,13 @@ export class CdkPipelineStage extends Stage {
 
     const ecsClusterStack = new EcsClusterStack({
       scope: this,
-      id: `${SERVICE_NAME}-EcsClusterStack`,
+      id: "EcsClusterStack",
       description: "Defines the ECS cluster and service for the backend service.",
     });
 
     const backendPipelineStack = new BackendPipelineStack({
       scope: this,
-      id: `${SERVICE_NAME}-BackendPipelineStack`,
+      id: "BackendPipelineStack",
       ecsService: ecsClusterStack.getService,
       ecrRepo: ecsClusterStack.getEcrRepo,
       description: "Defines the continuous deployment pipeline for the backend Fargate service.",
@@ -53,7 +53,7 @@ export class CdkPipelineStage extends Stage {
 
     const cloudfrontStack = new CloudfrontStack({
       scope: this,
-      id: `${SERVICE_NAME}-CloudfrontStack`,
+      id: "CloudfrontStack",
       alb: ecsClusterStack.getLoadBalancer,
       description:
         "Defines the static website bucket and Cloudfront distribution, and sets up the DNS records for the website.",
@@ -61,7 +61,7 @@ export class CdkPipelineStage extends Stage {
 
     const webcontentPipelineStack = new WebcontentPipelineStack({
       scope: this,
-      id: `${SERVICE_NAME}-WebcontentPipelineStack`,
+      id: "WebcontentPipelineStack",
       staticContentBucket: cloudfrontStack.staticBucket,
       distribution: cloudfrontStack.distributionName,
       description: "Defines the continuous deployment pipeline for the frontend content.",
@@ -69,7 +69,7 @@ export class CdkPipelineStage extends Stage {
 
     const redisStack = new RedisStack({
       scope: this,
-      id: `${SERVICE_NAME}-RedisStack`,
+      id: "RedisStack",
       vpc: ecsClusterStack.getVpc,
       description: "Defines the Redis cluster for the backend service.",
     });
