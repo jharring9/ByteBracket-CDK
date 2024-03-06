@@ -76,7 +76,8 @@ export class EcsClusterStack extends Stack {
 
     // Add container to fargate task definition:
     fargateTaskDefinition.addContainer("Container", {
-      image: ContainerImage.fromEcrRepository(this.ecrRepo),
+      // image: ContainerImage.fromEcrRepository(this.ecrRepo),
+      image: ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       portMappings: [{ containerPort: SERVICE_TASK_PORT }],
       logging: new AwsLogDriver({
         streamPrefix: "Backend-Container",
