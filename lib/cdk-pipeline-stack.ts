@@ -17,8 +17,8 @@ export class CdkPipelineStack extends Stack {
   constructor(props: CdkPipelineStackProps) {
     super(props.scope, props.id, props);
 
-    const pipeline = new CodePipeline(this, "Cdk-Pipeline", {
-      pipelineName: "Cdk-Pipeline",
+    const pipeline = new CodePipeline(this, `${SERVICE_NAME}-Cdk-Pipeline`, {
+      pipelineName: `${SERVICE_NAME}-Cdk-Pipeline`,
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.gitHub(`${GITHUB_USER}/${CDK_REPO}`, "main"),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
