@@ -6,8 +6,16 @@ import { WebcontentPipelineStack } from "./webcontent-pipeline-stack";
 import { BackendPipelineStack } from "./backend-pipeline-stack";
 import { EcsClusterStack } from "./ecs-cluster-stack";
 import { RedisStack } from "./redis-stack";
+import { CdkPipelineStack } from "./cdk-pipeline-stack";
 
 const app = new App();
+
+const cdkPipelineStack = new CdkPipelineStack({
+  scope: app,
+  id: `${SERVICE_NAME}-CdkPipelineStack`,
+  env: AWS_ENVIRONMENT,
+  description: "Defines the continuous deployment pipeline for the CDK-managed infrastructure.",
+});
 
 const ecsClusterStack = new EcsClusterStack({
   scope: app,
