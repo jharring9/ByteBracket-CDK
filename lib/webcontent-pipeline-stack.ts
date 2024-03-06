@@ -5,7 +5,7 @@ import { PipelineType } from "aws-cdk-lib/aws-codepipeline";
 import { GitHubSourceAction, CodeBuildAction, S3DeployAction } from "aws-cdk-lib/aws-codepipeline-actions";
 import { BuildEnvironmentVariableType, LinuxBuildImage, PipelineProject } from "aws-cdk-lib/aws-codebuild";
 import { BuildSpec, ComputeType } from "aws-cdk-lib/aws-codebuild";
-import { FRONTEND_REPO, GITHUB_TOKEN_ARN, GITHUB_USER, SERVICE_NAME } from "./config";
+import { FRONTEND_REPO, GITHUB_TOKEN_ARN, GITHUB_USER } from "./config";
 import { Construct } from "constructs";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
@@ -24,7 +24,7 @@ export class WebcontentPipelineStack extends Stack {
   }
 
   private createPipeline(distributionId: string, staticContentBucket: Bucket) {
-    const buildProject = new PipelineProject(this, `${SERVICE_NAME}-Frontend-Pipeline-CodeBuild`, {
+    const buildProject = new PipelineProject(this, "Frontend-Pipeline-CodeBuild", {
       buildSpec: BuildSpec.fromSourceFilename("buildspec.yml"),
       environment: {
         buildImage: LinuxBuildImage.AMAZON_LINUX_2_5,
@@ -42,14 +42,14 @@ export class WebcontentPipelineStack extends Stack {
     );
 
     // Source artifact
-    const sourceOutput = new Artifact(`${SERVICE_NAME}-Frontend-Source`);
+    const sourceOutput = new Artifact("Frontend-Source");
 
     // Build artifact
-    const buildOutput = new Artifact(`${SERVICE_NAME}-Frontend-Build`);
+    const buildOutput = new Artifact("Frontend-Build");
 
     // Pipeline declaration
-    const pipeline = new Pipeline(this, `${SERVICE_NAME}-Frontend-Pipeline`, {
-      pipelineName: `${SERVICE_NAME}-Frontend-Pipeline`,
+    const pipeline = new Pipeline(this, "Frontend-Pipeline", {
+      pipelineName: "Frontend-Pipeline",
       restartExecutionOnUpdate: true,
       pipelineType: PipelineType.V2,
     });

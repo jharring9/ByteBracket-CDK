@@ -11,7 +11,7 @@ import {
 import { LoadBalancerV2Origin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { IApplicationLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { DOMAIN_NAMES, SERVICE_DOMAIN, SERVICE_NAME, SERVICE_RECORD_NAME, SSL_CERT_ARN } from "./config";
+import { DOMAIN_NAMES, SERVICE_DOMAIN, SERVICE_RECORD_NAME, SSL_CERT_ARN } from "./config";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
@@ -27,9 +27,9 @@ export class CloudfrontStack extends Stack {
   private distribution: Distribution;
   constructor(props: CloudfrontStackProps) {
     super(props.scope, props.id, props);
-    this.staticContentBucket = new Bucket(this, `${SERVICE_NAME}-StaticContent-Bucket`);
+    this.staticContentBucket = new Bucket(this, "StaticContent-Bucket");
     this.createDistribution(props.alb);
-    this.createARecord(`${SERVICE_NAME}-TLD-ARecord`, SERVICE_RECORD_NAME);
+    this.createARecord("TLD-ARecord", SERVICE_RECORD_NAME);
   }
 
   get staticBucket(): Bucket {
@@ -41,7 +41,7 @@ export class CloudfrontStack extends Stack {
   }
 
   private createDistribution(alb: IApplicationLoadBalancer) {
-    this.distribution = new Distribution(this, `${SERVICE_NAME}-CDN`, {
+    this.distribution = new Distribution(this, "CDN", {
       defaultBehavior: {
         origin: new S3Origin(this.staticContentBucket),
         compress: true,
@@ -59,7 +59,7 @@ export class CloudfrontStack extends Stack {
           originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
         },
       },
-      certificate: Certificate.fromCertificateArn(this, `${SERVICE_NAME}-Certificate`, SSL_CERT_ARN),
+      certificate: Certificate.fromCertificateArn(this, "Certificate", SSL_CERT_ARN),
       defaultRootObject: "/index.html",
       domainNames: DOMAIN_NAMES,
       enableLogging: false,
@@ -76,7 +76,7 @@ export class CloudfrontStack extends Stack {
   }
 
   private createARecord(id: string, name: string) {
-    const zone = HostedZone.fromLookup(this, `${SERVICE_NAME}-HostedZone`, {
+    const zone = HostedZone.fromLookup(this, "HostedZone", {
       domainName: SERVICE_DOMAIN,
     });
     new ARecord(this, id, {

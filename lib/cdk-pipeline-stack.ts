@@ -26,7 +26,7 @@ export class CdkPipelineStack extends Stack {
     });
 
     pipeline.addStage(
-      new CdkPipelineStage(this, `${SERVICE_NAME}-CdkPipeline-Stage`, {
+      new CdkPipelineStage(this, `${SERVICE_NAME}`, {
         env: AWS_ENVIRONMENT,
       })
     );

@@ -5,7 +5,6 @@ import { AwsLogDriver, Cluster, ContainerImage, FargateService, FargateTaskDefin
 import {
   SERVICE_DESIRED_COUNT,
   SERVICE_MAX_CAPACITY_MULTIPLIER,
-  SERVICE_NAME,
   SERVICE_TASK_PORT,
   SSL_CERT_ARN,
   TARGET_CPU_UTILIZATION,
@@ -52,59 +51,55 @@ export class EcsClusterStack extends Stack {
   }
 
   private createSharedVpc() {
-    this.vpc = new Vpc(this, `${SERVICE_NAME}-BackendVpc`, { maxAzs: 2 });
+    this.vpc = new Vpc(this, "BackendVpc", { maxAzs: 2 });
   }
 
   private createFargateService() {
-    const cluster = new Cluster(this, `${SERVICE_NAME}-EcsCluster`, {
+    const cluster = new Cluster(this, "EcsCluster", {
       vpc: this.vpc,
     });
 
-    const fargateTaskDefinition = new FargateTaskDefinition(this, `${SERVICE_NAME}-FargateTaskDefinition`, {
+    const fargateTaskDefinition = new FargateTaskDefinition(this, "FargateTaskDefinition", {
       // TODO -- set memory and cpu limits higher
       executionRole: Role.fromRoleArn(
         this,
-        `${SERVICE_NAME}-Backend-ExecutionRole`,
+        "Backend-ExecutionRole",
         "arn:aws:iam::312042277619:role/ecsTaskExecutionRole"
       ),
-      taskRole: Role.fromRoleArn(
-        this,
-        `${SERVICE_NAME}-Backend-TaskRole`,
-        "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"
-      ),
+      taskRole: Role.fromRoleArn(this, "Backend-TaskRole", "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"),
     }); // TODO -- make roles from scratch, rather than importing from ARN, for reproducibility
 
     // Create managed ECR repository for fargate image:
-    this.ecrRepo = new Repository(this, `${SERVICE_NAME}-Backend-EcrRepo`, {
-      repositoryName: `${SERVICE_NAME}-Backend-EcrRepo`.toLowerCase(),
+    this.ecrRepo = new Repository(this, "Backend-EcrRepo", {
+      repositoryName: "Backend-EcrRepo".toLowerCase(),
     });
 
     // Add container to fargate task definition:
-    fargateTaskDefinition.addContainer(`${SERVICE_NAME}-Container`, {
+    fargateTaskDefinition.addContainer("Container", {
       image: ContainerImage.fromEcrRepository(this.ecrRepo),
       portMappings: [{ containerPort: SERVICE_TASK_PORT }],
       logging: new AwsLogDriver({
-        streamPrefix: `${SERVICE_NAME}-Backend-Container`,
+        streamPrefix: "Backend-Container",
         logRetention: RetentionDays.ONE_WEEK,
       }),
     });
-    this.service = new FargateService(this, `${SERVICE_NAME}-FargateService`, {
+    this.service = new FargateService(this, "FargateService", {
       cluster: cluster,
       taskDefinition: fargateTaskDefinition,
     });
   }
 
   private createLoadBalancer() {
-    this.alb = new ApplicationLoadBalancer(this, `${SERVICE_NAME}-Backend-ALB`, {
+    this.alb = new ApplicationLoadBalancer(this, "Backend-ALB", {
       vpc: this.vpc,
       internetFacing: true,
     });
-    const listener = this.alb.addListener(`${SERVICE_NAME}-ALB-Listener`, {
+    const listener = this.alb.addListener("ALB-Listener", {
       port: 443,
       protocol: ApplicationProtocol.HTTPS,
-      certificates: [Certificate.fromCertificateArn(this, `${SERVICE_NAME}-Certificate`, SSL_CERT_ARN)],
+      certificates: [Certificate.fromCertificateArn(this, "Certificate", SSL_CERT_ARN)],
     });
-    listener.addTargets(`${SERVICE_NAME}-ALB-Targets`, {
+    listener.addTargets("ALB-Targets", {
       port: SERVICE_TASK_PORT,
       targets: [this.service],
       healthCheck: {
@@ -118,7 +113,7 @@ export class EcsClusterStack extends Stack {
       minCapacity: SERVICE_DESIRED_COUNT,
       maxCapacity: SERVICE_DESIRED_COUNT * SERVICE_MAX_CAPACITY_MULTIPLIER,
     });
-    scalableTarget.scaleOnCpuUtilization(`${SERVICE_NAME}-CpuScaling`, {
+    scalableTarget.scaleOnCpuUtilization("CpuScaling", {
       targetUtilizationPercent: TARGET_CPU_UTILIZATION,
     });
     // TODO -- create request count scaling? or latency scaling?

@@ -5,7 +5,7 @@ import { PipelineType } from "aws-cdk-lib/aws-codepipeline";
 import { GitHubSourceAction, CodeBuildAction, EcsDeployAction } from "aws-cdk-lib/aws-codepipeline-actions";
 import { LinuxBuildImage, PipelineProject } from "aws-cdk-lib/aws-codebuild";
 import { BuildSpec, ComputeType } from "aws-cdk-lib/aws-codebuild";
-import { BACKEND_REPO, GITHUB_TOKEN_ARN, GITHUB_USER, SERVICE_NAME } from "./config";
+import { BACKEND_REPO, GITHUB_TOKEN_ARN, GITHUB_USER } from "./config";
 import { Construct } from "constructs";
 import { FargateService } from "aws-cdk-lib/aws-ecs";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
@@ -25,7 +25,7 @@ export class BackendPipelineStack extends Stack {
   }
 
   private createPipeline(ecrRepo: Repository, ecsService: FargateService) {
-    const buildProject = new PipelineProject(this, `${SERVICE_NAME}-Backend-Pipeline-CodeBuild`, {
+    const buildProject = new PipelineProject(this, "Backend-Pipeline-CodeBuild", {
       buildSpec: BuildSpec.fromSourceFilename("buildspec.yml"),
       environment: {
         buildImage: LinuxBuildImage.AMAZON_LINUX_2_5,
@@ -55,14 +55,14 @@ export class BackendPipelineStack extends Stack {
     );
 
     // Source artifact
-    const sourceOutput = new Artifact(`${SERVICE_NAME}-Backend-Source`);
+    const sourceOutput = new Artifact("Backend-Source");
 
     // Build artifact
-    const buildOutput = new Artifact(`${SERVICE_NAME}-Backend-Build`);
+    const buildOutput = new Artifact("Backend-Build");
 
     // Pipeline declaration
-    const pipeline = new Pipeline(this, `${SERVICE_NAME}-Backend-Pipeline`, {
-      pipelineName: `${SERVICE_NAME}-Backend-Pipeline`,
+    const pipeline = new Pipeline(this, "Backend-Pipeline", {
+      pipelineName: "Backend-Pipeline",
       restartExecutionOnUpdate: true,
       pipelineType: PipelineType.V2,
     });
