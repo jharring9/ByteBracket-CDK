@@ -102,9 +102,9 @@ export class EcsClusterStack extends Stack {
     listener.addTargets("ALB-Targets", {
       port: SERVICE_TASK_PORT,
       targets: [this.service],
-      // healthCheck: {
-      //   path: TASK_HEALTH_CHECK_PATH,
-      // },
+      healthCheck: {
+        path: TASK_HEALTH_CHECK_PATH,
+      },
     });
   }
 
