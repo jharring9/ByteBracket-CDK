@@ -3,7 +3,9 @@ import { Stack, StackProps } from "aws-cdk-lib";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { AwsLogDriver, Cluster, ContainerImage, FargateService, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
 import {
+  ALB_DNS_SUBDOMAIN,
   SERVICE_DESIRED_COUNT,
+  SERVICE_DOMAIN,
   SERVICE_MAX_CAPACITY_MULTIPLIER,
   SERVICE_TASK_PORT,
   SSL_CERT_ARN,
@@ -15,6 +17,8 @@ import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { Role } from "aws-cdk-lib/aws-iam";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import { LoadBalancerTarget } from "aws-cdk-lib/aws-route53-targets";
+import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 
 type EcsClusterStackProps = StackProps & {
   scope: Construct;
@@ -32,6 +36,7 @@ export class EcsClusterStack extends Stack {
     this.createFargateService();
     this.createLoadBalancer();
     this.createAutoScaling();
+    this.createARecord("Backend-ARecord", ALB_DNS_SUBDOMAIN);
   }
 
   get getVpc(): Vpc {
@@ -117,5 +122,16 @@ export class EcsClusterStack extends Stack {
       targetUtilizationPercent: TARGET_CPU_UTILIZATION,
     });
     // TODO -- create request count scaling? or latency scaling?
+  }
+
+  private createARecord(id: string, name: string) {
+    const zone = HostedZone.fromLookup(this, "HostedZone", {
+      domainName: SERVICE_DOMAIN,
+    });
+    new ARecord(this, id, {
+      zone: zone,
+      target: RecordTarget.fromAlias(new LoadBalancerTarget(this.alb)),
+      recordName: name,
+    });
   }
 }

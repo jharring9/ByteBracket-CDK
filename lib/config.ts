@@ -29,3 +29,4 @@ export const SERVICE_TASK_PORT = 80;
 export const SERVICE_DESIRED_COUNT = 1;
 export const SERVICE_MAX_CAPACITY_MULTIPLIER = 10;
 export const TARGET_CPU_UTILIZATION = 50;
+export const ALB_DNS_SUBDOMAIN = "backend-alb";
