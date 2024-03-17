@@ -3,14 +3,14 @@ import { Stack, StackProps } from "aws-cdk-lib";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { AwsLogDriver, Cluster, ContainerImage, FargateService, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
 import {
-  ALB_DNS_SUBDOMAIN,
+  ALB_DNS_SUBDOMAIN, SERVICE_CPU,
   SERVICE_DESIRED_COUNT,
   SERVICE_DOMAIN,
-  SERVICE_MAX_CAPACITY_MULTIPLIER,
+  SERVICE_MAX_CAPACITY_MULTIPLIER, SERVICE_MEMORY_LIMIT,
   SERVICE_TASK_PORT,
   SSL_CERT_ARN,
   TARGET_CPU_UTILIZATION,
-  TASK_HEALTH_CHECK_PATH,
+  TASK_HEALTH_CHECK_PATH
 } from "./config";
 import { ApplicationLoadBalancer, ApplicationProtocol } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
@@ -65,7 +65,8 @@ export class EcsClusterStack extends Stack {
     });
 
     const fargateTaskDefinition = new FargateTaskDefinition(this, "FargateTaskDefinition", {
-      // TODO -- set memory and cpu limits higher
+      cpu: SERVICE_CPU,
+      memoryLimitMiB: SERVICE_MEMORY_LIMIT,
       executionRole: Role.fromRoleArn(
         this,
         "Backend-ExecutionRole",
