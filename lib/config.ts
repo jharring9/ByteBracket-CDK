@@ -1,4 +1,5 @@
 /******** TOP-LEVEL CONFIGURATION ********/
+export const IS_OFFSEASON = true;
 export const SERVICE_NAME = "ByteBracket";
 export const AWS_ENVIRONMENT = { account: "312042277619", region: "us-east-1" };
 export const SERVICE_DOMAIN = "bytebracket.io";

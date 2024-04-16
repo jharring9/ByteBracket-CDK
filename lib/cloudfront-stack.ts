@@ -19,7 +19,7 @@ import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 type CloudfrontStackProps = StackProps & {
   scope: Construct;
   id: string;
-  alb: IApplicationLoadBalancer;
+  alb: IApplicationLoadBalancer | null;
 };
 
 export class CloudfrontStack extends Stack {
@@ -28,8 +28,11 @@ export class CloudfrontStack extends Stack {
   constructor(props: CloudfrontStackProps) {
     super(props.scope, props.id, props);
     this.staticContentBucket = new Bucket(this, "StaticContent-Bucket");
-    this.createDistribution(props.alb);
     this.createARecord("TLD-ARecord", SERVICE_RECORD_NAME);
+
+    if(props.alb !== null) {
+      this.createDistribution(props.alb);
+    }
   }
 
   get staticBucket(): Bucket {
@@ -49,7 +52,7 @@ export class CloudfrontStack extends Stack {
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
       },
-      additionalBehaviors: {
+      additionalBehaviors: alb ? {
         "/v1*": {
           origin: new LoadBalancerV2Origin(alb),
           compress: true,
@@ -58,7 +61,7 @@ export class CloudfrontStack extends Stack {
           cachePolicy: CachePolicy.CACHING_DISABLED,
           originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
         },
-      },
+      } : undefined,
       certificate: Certificate.fromCertificateArn(this, "Certificate", SSL_CERT_ARN),
       defaultRootObject: "/index.html",
       domainNames: DOMAIN_NAMES,
