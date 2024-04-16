@@ -28,8 +28,11 @@ export class CloudfrontStack extends Stack {
   constructor(props: CloudfrontStackProps) {
     super(props.scope, props.id, props);
     this.staticContentBucket = new Bucket(this, "StaticContent-Bucket");
-    this.createDistribution(props.alb);
     this.createARecord("TLD-ARecord", SERVICE_RECORD_NAME);
+
+    if(props.alb !== null) {
+      this.createDistribution(props.alb);
+    }
   }
 
   get staticBucket(): Bucket {
