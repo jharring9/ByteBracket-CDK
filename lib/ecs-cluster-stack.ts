@@ -81,7 +81,7 @@ export class EcsClusterStack extends Stack {
       ),
       taskRole: Role.fromRoleArn(this, "Backend-TaskRole", "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"),
       runtimePlatform: {
-        cpuArchitecture: CpuArchitecture.ARM64,
+        cpuArchitecture: CpuArchitecture.X86_64,
         operatingSystemFamily: OperatingSystemFamily.LINUX
 
       }
