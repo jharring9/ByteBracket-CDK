@@ -1,7 +1,7 @@
-import { Stack, StackProps, Stage } from "aws-cdk-lib";
+import { SecretValue, Stack, StackProps, Stage } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { CodePipeline, CodePipelineSource, ShellStep } from "aws-cdk-lib/pipelines";
-import { AWS_ENVIRONMENT, CDK_REPO, GITHUB_USER, IS_OFFSEASON, SERVICE_NAME } from "./config";
+import { AWS_ENVIRONMENT, CDK_REPO, GITHUB_TOKEN_ARN, GITHUB_USER, IS_OFFSEASON, SERVICE_NAME } from "./config";
 import { EcsClusterStack } from "./ecs-cluster-stack";
 import { BackendPipelineStack } from "./backend-pipeline-stack";
 import { CloudfrontStack } from "./cloudfront-stack";
@@ -20,7 +20,9 @@ export class CdkPipelineStack extends Stack {
     const pipeline = new CodePipeline(this, `${SERVICE_NAME}-Cdk-Pipeline`, {
       pipelineName: `${SERVICE_NAME}-Cdk-Pipeline`,
       synth: new ShellStep("Synth", {
-        input: CodePipelineSource.gitHub(`${GITHUB_USER}/${CDK_REPO}`, "main"),
+        input: CodePipelineSource.gitHub(`${GITHUB_USER}/${CDK_REPO}`, "main", {
+          authentication: SecretValue.secretsManager(GITHUB_TOKEN_ARN),
+        }),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
     });

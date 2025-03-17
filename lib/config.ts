@@ -12,7 +12,7 @@ export const REDIS_NODE_TYPE = "cache.t2.micro";
 export const FRONTEND_REPO = "ByteBracket";
 export const BACKEND_REPO = "ByteBracket-Backend";
 export const CDK_REPO = "ByteBracket-CDK";
-export const GITHUB_TOKEN_ARN = "arn:aws:secretsmanager:us-east-1:312042277619:secret:Github/PAT-sWRBrJ";
+export const GITHUB_TOKEN_ARN = "arn:aws:secretsmanager:us-east-1:312042277619:secret:Github/PAT-zO8Xmx";
 export const GITHUB_USER = "jharring9";
 
 /******** REDIS CONFIGURATION ********/
