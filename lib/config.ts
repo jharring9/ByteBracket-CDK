@@ -1,12 +1,12 @@
 /******** TOP-LEVEL CONFIGURATION ********/
-export const IS_OFFSEASON = true;
+export const IS_OFFSEASON = false;
 export const SERVICE_NAME = "ByteBracket";
 export const AWS_ENVIRONMENT = { account: "312042277619", region: "us-east-1" };
 export const SERVICE_DOMAIN = "bytebracket.io";
 export const SERVICE_RECORD_NAME = "bytebracket.io.";
 
 /******** INFRASTRUCTURE CONFIGURATION ********/
-export const REDIS_NODE_TYPE = "cache.t3.micro"; // TODO -- figure out a good instance type
+export const REDIS_NODE_TYPE = "cache.t2.micro";
 
 /******** GITHUB CONFIGURATION ********/
 export const FRONTEND_REPO = "ByteBracket";
