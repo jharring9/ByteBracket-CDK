@@ -80,11 +80,6 @@ export class EcsClusterStack extends Stack {
         "arn:aws:iam::312042277619:role/ecsTaskExecutionRole"
       ),
       taskRole: Role.fromRoleArn(this, "Backend-TaskRole", "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"),
-      runtimePlatform: {
-        cpuArchitecture: CpuArchitecture.X86_64,
-        operatingSystemFamily: OperatingSystemFamily.LINUX
-
-      }
     }); // TODO -- make roles from scratch, rather than importing from ARN, for reproducibility
 
     // Create managed ECR repository for fargate image:
