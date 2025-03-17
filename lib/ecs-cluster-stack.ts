@@ -7,7 +7,7 @@ import {
   ContainerImage,
   CpuArchitecture,
   FargateService,
-  FargateTaskDefinition
+  FargateTaskDefinition, OperatingSystemFamily
 } from "aws-cdk-lib/aws-ecs";
 import {
   ALB_DNS_SUBDOMAIN, SERVICE_CPU,
@@ -82,6 +82,8 @@ export class EcsClusterStack extends Stack {
       taskRole: Role.fromRoleArn(this, "Backend-TaskRole", "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"),
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.ARM64,
+        operatingSystemFamily: OperatingSystemFamily.LINUX
+
       }
     }); // TODO -- make roles from scratch, rather than importing from ARN, for reproducibility
 
