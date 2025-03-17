@@ -1,7 +1,14 @@
 import { Construct } from "constructs";
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
-import { AwsLogDriver, Cluster, ContainerImage, FargateService, FargateTaskDefinition } from "aws-cdk-lib/aws-ecs";
+import {
+  AwsLogDriver,
+  Cluster,
+  ContainerImage,
+  CpuArchitecture,
+  FargateService,
+  FargateTaskDefinition
+} from "aws-cdk-lib/aws-ecs";
 import {
   ALB_DNS_SUBDOMAIN, SERVICE_CPU,
   SERVICE_DESIRED_COUNT,
@@ -73,6 +80,9 @@ export class EcsClusterStack extends Stack {
         "arn:aws:iam::312042277619:role/ecsTaskExecutionRole"
       ),
       taskRole: Role.fromRoleArn(this, "Backend-TaskRole", "arn:aws:iam::312042277619:role/ECS-ByteBracket-Role"),
+      runtimePlatform: {
+        cpuArchitecture: CpuArchitecture.ARM64,
+      }
     }); // TODO -- make roles from scratch, rather than importing from ARN, for reproducibility
 
     // Create managed ECR repository for fargate image:
